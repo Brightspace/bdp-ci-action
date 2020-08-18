@@ -1,0 +1,17 @@
+name: 'Stage Release'
+description: 'Create release package for BDP'
+inputs:
+  branch:
+    description: 'The branch of current build'
+    required: true
+    default: ''
+  buildNum:
+    description: 'The current build number'
+    required: true
+    default: ''
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.branch }}
+    - ${{ inputs.buildNum }}
