@@ -1,0 +1,17 @@
+name: 'Upload S3'
+description: 'Uploads package to S3'
+inputs:
+  bucket:
+    required: true
+  product:
+    required: true
+  branch:
+    required: true
+  build:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/installer-features.txt --body installer-features.txt
+      shell: bash
