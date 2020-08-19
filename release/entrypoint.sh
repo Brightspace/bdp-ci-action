@@ -4,8 +4,10 @@ set -eu
 
 echo " \n\n === Staging Product For Release === \n"
 
-gitBranch=$1
-buildNum=$2
+gitBranch=$([[ -z "$GITHUB_HEAD_REF" ]] && echo "$GITHUB_REF" || echo "$GITHUB_HEAD_REF")
+buildNum=$(($GITHUB_RUN_NUMBER + $BUILD_NUM_OFFSET))
+echo "::set-output name=branch::${BRANCH_REF##refs/heads/}"
+echo "::set-output name=build::${BUILD_NUMBER}"
 
 # Install git if not exist
 if ! command -v git &> /dev/null; then
