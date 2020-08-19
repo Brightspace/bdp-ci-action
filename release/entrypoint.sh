@@ -4,7 +4,7 @@ set -eu
 
 echo " \n\n === Staging Product For Release === \n"
 
-gitBranch=$([[ -z "$GITHUB_HEAD_REF" ]] && echo "$GITHUB_REF" || echo "$GITHUB_HEAD_REF")
+gitBranch=$([ -z "$GITHUB_HEAD_REF" ] && echo "$GITHUB_REF" || echo "$GITHUB_HEAD_REF")
 buildNum=$(($GITHUB_RUN_NUMBER + $BUILD_NUM_OFFSET))
 echo "::set-output name=branch::${gitBranch##refs/heads/}"
 echo "::set-output name=build::${buildNum}"
