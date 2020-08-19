@@ -14,15 +14,11 @@ runs:
   using: "composite"
   steps:
     - name: Create and release
-      run: |
-        tar -C ./release -czvf release.tar.gz .
-        aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/release.tar.gz --body release.tar.gz
+      run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/release.tar.gz --body release.tar.gz
       shell: bash
     - name: Upload installer features
       run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/installer-features.txt --body installer-features.txt
       shell: bash
     - name: Update latest build
-      run: |
-        echo ${{ inputs.build }} >> latestBuild
-        aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/latestBuild --body latestBuild
+      run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/latestBuild --body latestBuild
       shell: bash
