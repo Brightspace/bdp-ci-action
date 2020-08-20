@@ -13,7 +13,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Create and release
+    - name: Upload release
       run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/release.tar.gz --body release.tar.gz
       shell: bash
     - name: Upload installer features
