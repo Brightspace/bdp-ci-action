@@ -1,0 +1,5 @@
+name: 'Java Build'
+description: 'Use Maven to build Java project'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
