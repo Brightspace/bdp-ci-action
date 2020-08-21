@@ -31,12 +31,10 @@ revisionUrl=`git config remote.origin.url`
 echo "[$revision] $revisionUrl"
 echo "$revisionUrl,$revision" >> release/git_revisions.csv
 
-echo "GitBranch $gitBranch"
-
 if [ -z $gitBranch ]; then
   gitBranch=`git rev-parse --abbrev-ref HEAD`
 fi
-if [ $gitBranch = "master" ]; then
+if [ $gitBranch = "refs/heads/master" ]; then
   echo " \n ==> Creating Git History File \n"
   # hash, author name, author email, commit message
   git --no-pager log --oneline --format='%H,"%an","%ae","%s"' > release/git_history.csv
