@@ -13,6 +13,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install awscli if not exist
+      run: |
+        if ! command -v git &> /dev/null; then
+          apt update && apt upgrade -y && apt install awscli -y
+        fi
     - name: Upload release
       run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/release.tar.gz --body release.tar.gz
       shell: bash
