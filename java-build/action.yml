@@ -1,0 +1,16 @@
+name: 'Java Build'
+description: 'Use Maven to build Java project'
+inputs:
+  ARTIFACTORY_MAVEN:
+    description: 'The Artifactory access token for Maven'
+    required: true
+  PROJECT_PATH:
+    description: 'The relative PATH of Maven project folder'
+    required: true
+    default: "."
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.ARTIFACTORY_MAVEN }}
+    - ${{ inputs.PROJECT_PATH }}
