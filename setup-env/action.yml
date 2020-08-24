@@ -6,7 +6,7 @@ runs:
   steps:
     - name: Install updates and missing packages
       run: |
-        apt update && apt upgrade -y
+        apt update
 
         # Install git if not exist
         if ! command -v git &> /dev/null; then
