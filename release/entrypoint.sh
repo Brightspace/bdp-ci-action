@@ -9,12 +9,6 @@ buildNum=$(($GITHUB_RUN_NUMBER + $BUILD_NUM_OFFSET))
 echo "::set-output name=branch::${gitBranch##refs/heads/}"
 echo "::set-output name=build::${buildNum}"
 
-# Install git if not exist
-if ! command -v git &> /dev/null; then
-    echo " \n ==> Installing Git \n"
-    apt update && apt upgrade -y && apt install git -y
-fi
-
 # Check if in root directory
 if [ ! -d ".git" ]; then
   echo "You must be in the projects root!\n"
