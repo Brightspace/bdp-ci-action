@@ -6,7 +6,8 @@ runs:
   steps:
     - name: Install updates and missing packages
       run: |
-        apt update
+        export DEBIAN_FRONTEND=noninteractive
+        apt update && apt upgrade -y
 
         # Install git if not exist
         if ! command -v git &> /dev/null; then
