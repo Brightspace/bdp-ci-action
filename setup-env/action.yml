@@ -1,0 +1,20 @@
+name: 'Setup Environment'
+description: 'Setup dependencies for base container'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install updates and missing packages
+      run: |
+        apt update && apt upgrade -y
+
+        # Install git if not exist
+        if ! command -v git &> /dev/null; then
+          apt install git -y
+        fi
+
+        # Install awscli if not exist
+        if ! command -v aws &> /dev/null; then
+          apt install awscli -y
+        fi
+      shell: bash
