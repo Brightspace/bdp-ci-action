@@ -8,5 +8,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - run: ls -al /home/jparker/actions-runner/_work/_actions/Brightspace/bdp-ci-action/release/release/
+      shell: bash
     - run: ${{ github.action_path }}/entrypoint.sh
       shell: bash
