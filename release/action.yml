@@ -7,10 +7,11 @@ outputs:
     description: Build number
 runs:
   using: 'composite'
+  env:
+    action_path=${{ github.action_path }}
   steps:
     - run: |
-        pwd
-        ls -al
+        ls -al $action_path
       shell: bash
-    - run: ./entrypoint.sh
+    - run: ${{ github.action_path }}/entrypoint.sh
       shell: bash
