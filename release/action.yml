@@ -6,8 +6,7 @@ outputs:
   build:
     description: Build number
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.branch }}
-    - ${{ inputs.buildNum }}
+  using: 'composite'
+  steps:
+    - run: ${{ github.action_path }}/entrypoint.sh
+      shell: bash
