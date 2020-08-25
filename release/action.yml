@@ -8,6 +8,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - run: apt install tree -y
+      shell: bash
     - run: tree /home/jparker/actions-runner/_work/_actions/Brightspace/bdp-ci-action/
       shell: bash
     - run: ${{ github.action_path }}/entrypoint.sh
