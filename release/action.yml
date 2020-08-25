@@ -3,12 +3,15 @@ description: 'Create release package for BDP'
 outputs:
   branch:
     description: Git branch
+    value: ${{ steps.release.outputs.branch }}
   build:
     description: Build number
+    value: ${{ steps.release.outputs.build }}
 runs:
   using: 'composite'
   steps:
-    - run: |
+    - id: release
+      run: |
         set -eu
 
         echo " \n\n === Staging Product For Release === \n"
