@@ -4,6 +4,13 @@ set -eu
 
 accessToken=$1
 projectPath=$2
+if [ $3 = "true" ]; then
+  deploy=true
+else
+  deploy=false
+fi
+productBranch=$4
+productBuildNumber=$5
 
 echo " \n\n === Building .jar file === \n"
 
@@ -24,3 +31,21 @@ fi
 echo " \n\n === Maven build === \n"
 cd $projectPath
 mvn -s ~/.m2/settings.xml verify
+
+# exit script if deploy is false
+if [ $deploy = false ]; then
+  exit 0
+fi
+
+# deploy to Artifactory
+packageVersion="1.0.$productBuildNumber"
+if [ ! -z $productBranch ] && [ $productBranch != "master" ]; then
+  packageVersion="$packageVersion-$productBranch"
+fi
+
+echo "deploying version: '$packageVersion'"
+
+echo "\n ==> Deploy to Artifactory \n"
+
+mvn -f pom.xml "-DnewVersion=$packageVersion" versions:set
+mvn -f pom.xml install deploy
