@@ -47,5 +47,5 @@ echo "deploying version: '$packageVersion'"
 
 echo "\n ==> Deploy to Artifactory \n"
 
-mvn -f pom.xml "-DnewVersion=$packageVersion" versions:set
-mvn -f pom.xml install deploy
+mvn -s ~/.m2/settings.xml -f pom.xml "-DnewVersion=$packageVersion" versions:set
+mvn -s ~/.m2/settings.xml -f pom.xml install deploy
