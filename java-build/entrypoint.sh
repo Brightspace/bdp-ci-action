@@ -30,7 +30,7 @@ fi
 # build Spark jar
 echo " \n\n === Maven build === \n"
 cd $projectPath
-mvn -s ~/.m2/settings.xml verify
+mvn -s ~/.m2/settings.xml verify coveralls:report
 
 # exit script if deploy is false
 if [ $deploy = false ]; then
