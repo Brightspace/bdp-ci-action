@@ -26,8 +26,8 @@ fi
 # build Spark jar
 echo " \n\n === Maven build === \n"
 cd $projectPath
-export COVERALLS_PARALLE=true
-export CI_NAME=github
+export COVERALLS_PARALLEL=true
+export CI_NAME=Github
 export CI_BUILD_NUMBER=$GITHUB_RUN_ID
 mvn -s ~/.m2/settings.xml verify jacoco:report coveralls:report
 
