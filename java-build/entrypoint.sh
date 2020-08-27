@@ -4,11 +4,7 @@ set -eu
 
 accessToken=$1
 projectPath=$2
-if [ $3 = "true" ]; then
-  deploy=true
-else
-  deploy=false
-fi
+deploy=$3
 productBranch=$4
 productBuildNumber=$5
 
