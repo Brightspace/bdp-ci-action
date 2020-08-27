@@ -8,9 +8,24 @@ inputs:
     description: 'The relative PATH of Maven project folder'
     required: true
     default: "."
+  DEPLOY:
+    description: 'Flag for publishing to Artifactory'
+    required: false
+    default: "false"
+  BRANCH:
+    description: 'Git branch'
+    required: false
+    default: "master"
+  BUILDNUM:
+    description: 'CI build number'
+    required: false
+    default: 10000
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.ARTIFACTORY_MAVEN }}
     - ${{ inputs.PROJECT_PATH }}
+    - ${{ inputs.DEPLOY }}
+    - ${{ inputs.BRANCH }}
+    - ${{ inputs.BUILDNUM }}
