@@ -80,10 +80,6 @@ runs:
           rm -rv release/install/install/
         fi
 
-        # Create tarball
-        echo " \n ==> Creating tarball \n"
-        tar -C ./release -czvf release.tar.gz .
-
         # Generate version file
         echo " \n ==> Write version file \n"
         echo $buildNum > latestBuild
