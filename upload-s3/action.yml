@@ -9,6 +9,8 @@ inputs:
     required: true
   build:
     required: true
+  untar:
+    default: false
 
 runs:
   using: "composite"
@@ -16,7 +18,19 @@ runs:
     - name: Create tarball
       run: tar -C ./release -czvf release.tar.gz .
       shell: bash
-    - name: Upload release
+    - name: Upload release folder
+      run: |
+        s3Prefix=${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}
+        # upload individual file if flag untar is set
+        if [ ${{ inputs.untar }} = true ]; then
+          for file in $(find release); do
+            if [ ! -d $file -a -f $file ]; then
+              aws s3api put-object --bucket ${{ inputs.bucket }} --key "$s3Prefix/${file#release/}" --body $file
+            fi
+          done
+        fi
+      shell: bash
+    - name: Upload release tarball
       run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/release.tar.gz --body release.tar.gz
       shell: bash
     - name: Upload installer features
