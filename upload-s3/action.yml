@@ -25,7 +25,7 @@ runs:
         if [ ${{ inputs.untar }} = true ]; then
           for file in $(find release); do
             if [ ! -d $file -a -f $file ]; then
-              aws s3api put-object --bucket ${{ inputs.bucket }} "$s3Prefix/${file#release/}" --body $file
+              aws s3api put-object --bucket ${{ inputs.bucket }} --key "$s3Prefix/${file#release/}" --body $file
             fi
           done
         fi
