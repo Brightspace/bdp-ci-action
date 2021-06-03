@@ -37,7 +37,19 @@ if [ $deploy = false ]; then
 fi
 
 # deploy to Artifactory
-packageVersion="1.0.$productBuildNumber"
+if [ -z $productBuildNumber ]; then
+  # get the package version from the pom.xml
+  # add following to pom.xml
+  # <plugin>
+  #    <groupId>org.apache.maven.plugins</groupId>
+  #    <artifactId>maven-help-plugin</artifactId>
+  #    <version>3.2.0+</version>
+  # </plugin>
+  packageVersion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+else
+  packageVersion="1.0.$productBuildNumber"
+fi
+
 if [ ! -z $productBranch ] && [ $productBranch != "master" ]; then
   packageVersion="$packageVersion-$productBranch"
 fi
