@@ -32,7 +32,7 @@ export CI_BUILD_NUMBER=$GITHUB_RUN_ID
 mvn -s ~/.m2/settings.xml verify jacoco:report coveralls:report
 
 # exit script if deploy is false
-if [ $deploy = false ]; then
+if [ $deploy = "false" ]; then
   exit 0
 fi
 
@@ -50,8 +50,8 @@ else
   packageVersion="1.0.$productBuildNumber"
 fi
 
-# deploy to Artifactory only on master
-if [ ! -z $productBranch ] && [ $productBranch = "master" ]; then
+# deploy to Artifactory only on master or if a dev wants to force a dev branch to build
+if ([ ! -z $productBranch ] && [ $productBranch = "master" ]) || [ $deploy = "force" ]; then
   echo "deploying version: '$packageVersion'"
   echo "\n ==> Deploy to Artifactory \n"
 
