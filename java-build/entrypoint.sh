@@ -50,13 +50,11 @@ else
   packageVersion="1.0.$productBuildNumber"
 fi
 
-if [ ! -z $productBranch ] && [ $productBranch != "master" ]; then
-  packageVersion="$packageVersion-$productBranch"
+# deploy to Artifactory only on master
+if [ ! -z $productBranch ] && [ $productBranch = "master" ]; then
+  echo "deploying version: '$packageVersion'"
+  echo "\n ==> Deploy to Artifactory \n"
+
+  mvn -s ~/.m2/settings.xml -f pom.xml "-DnewVersion=$packageVersion" versions:set
+  mvn -s ~/.m2/settings.xml -f pom.xml install deploy
 fi
-
-echo "deploying version: '$packageVersion'"
-
-echo "\n ==> Deploy to Artifactory \n"
-
-mvn -s ~/.m2/settings.xml -f pom.xml "-DnewVersion=$packageVersion" versions:set
-mvn -s ~/.m2/settings.xml -f pom.xml install deploy
