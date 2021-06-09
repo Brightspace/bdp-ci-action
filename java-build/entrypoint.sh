@@ -7,6 +7,7 @@ projectPath=$2
 deploy=$3
 productBranch=$4
 productBuildNumber=$5
+codeCoverageCommands=$6
 
 echo " \n\n === Building .jar file === \n"
 
@@ -29,7 +30,7 @@ cd $projectPath
 export COVERALLS_PARALLEL=true
 export CI_NAME=Github
 export CI_BUILD_NUMBER=$GITHUB_RUN_ID
-mvn -s ~/.m2/settings.xml verify jacoco:report coveralls:report
+mvn -s ~/.m2/settings.xml verify "$codeCoverageCommands"
 
 # exit script if deploy is false
 if [ $deploy = "false" ]; then

@@ -20,6 +20,10 @@ inputs:
     description: 'CI build number'
     required: false
     default: 10000
+  CODE_COVERAGE_COMMANDS:
+    description: 'Additional commands to run for code coverage requirements'
+    required: false
+    default: "jacoco:report coveralls:report"
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -29,3 +33,4 @@ runs:
     - ${{ inputs.DEPLOY }}
     - ${{ inputs.BRANCH }}
     - ${{ inputs.BUILDNUM }}
+    - ${{ inputs.CODE_COVERAGE_COMMANDS }}
