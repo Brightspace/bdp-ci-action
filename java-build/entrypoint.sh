@@ -31,6 +31,9 @@ export COVERALLS_PARALLEL=true
 export CI_NAME=Github
 export CI_BUILD_NUMBER=$GITHUB_RUN_ID
 mvn -s ~/.m2/settings.xml verify $codeCoverageCommands
+# run the unit tests
+echo " \n\n === Maven test === \n"
+mvn -s ~/.m2/settings.xml test
 
 # exit script if deploy is false
 if [ $deploy = "false" ]; then
