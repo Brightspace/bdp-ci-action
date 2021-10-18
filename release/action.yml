@@ -65,7 +65,7 @@ runs:
         if [ -d "spark" ]; then
           echo " \n ==> Stage Spark jar \n"
           mkdir -p release/install/spark/target
-          rm -v spark/target/original-*.jar
+          sudo rm -v spark/target/original-*.jar
           cp -v spark/target/*.jar release/install/spark/target/
         fi
 
@@ -77,7 +77,7 @@ runs:
 
         if [ -d "install" ]; then
           mv -v release/install/install/* release/install/
-          rm -rv release/install/install/
+          sudo rm -rv release/install/install/
         fi
 
         # Generate version file
