@@ -11,6 +11,9 @@ inputs:
     required: true
   untar:
     default: false
+  path-to-installer-features:
+    required: false
+    default: installer-features.txt
 
 runs:
   using: "composite"
@@ -34,7 +37,7 @@ runs:
       run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/release.tar.gz --body release.tar.gz
       shell: bash
     - name: Upload installer features
-      run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/install/installer-features.txt --body installer-features.txt
+      run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/${{ inputs.build }}/install/installer-features.txt --body ${{ inputs.path-to-installer-features }}
       shell: bash
     - name: Update latest build
       run: aws s3api put-object --bucket ${{ inputs.bucket }} --key ${{ inputs.product }}/${{ inputs.branch }}/latestBuild --body latestBuild
