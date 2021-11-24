@@ -54,6 +54,8 @@ runs:
           egrep -v '^bdp-ci' |
           egrep -v '^spark/' |
           egrep -v '^handlers/' |
+          egrep -v '^docs/' |
+          egrep -v '^test/' |
           xargs -I{} cp --parents -Rv {} release/install/
 
         # Take care of serverless plugins
