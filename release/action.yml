@@ -1,5 +1,10 @@
 name: 'Stage Release'
 description: 'Create release package for BDP'
+inputs:
+  test_directory_exclude:
+    description: 'The test directory to exclude'
+    required: false
+    default: 'test'
 outputs:
   branch:
     description: Git branch
@@ -54,6 +59,8 @@ runs:
           egrep -v '^bdp-ci' |
           egrep -v '^spark/' |
           egrep -v '^handlers/' |
+          egrep -v '^docs/' |
+          egrep -v '^${{ inputs.test_directory_exclude }}/' |
           xargs -I{} cp --parents -Rv {} release/install/
 
         # Take care of serverless plugins
