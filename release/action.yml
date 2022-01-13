@@ -33,7 +33,7 @@ runs:
         fi
 
         echo " \n ==> Clean Existing Folders \n"
-        git clean -fxd -e mocha.xml -e coverage/ -e spark/ -e *.jar
+        git clean -fxd -e mocha.xml -e coverage/ -e spark/ -e *.jar -e events/
 
         echo " \n ==> Creating Git Revision File \n"
         mkdir -p release/
