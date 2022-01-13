@@ -86,7 +86,7 @@ runs:
         if [ -d "events" ]; then
           echo " \n ==> Stage Schema \n"
           mkdir -p release/install/events
-          cp -vR events/ release/install/events/
+          cp -vR events/ release/install/
         fi
 
         if [ -d "install" ]; then
