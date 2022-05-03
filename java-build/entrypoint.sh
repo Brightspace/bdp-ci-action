@@ -2,21 +2,43 @@
 
 set -eu
 
-accessToken=$1
-projectPath=$2
-deploy=$3
-productBranch=$4
-productBuildNumber=$5
-codeCoverageCommands=$6
+projectPath=$1
+deploy=$2
+productBranch=$3
+productBuildNumber=$4
+codeCoverageCommands=$5
 
 echo " \n\n === Building .jar file === \n"
 
 # print maven's version
 mvn --version
 
-# setup Artifactory access token for Maven
+# setup CodeArtifact access token for Maven
 mkdir -p ~/.m2
-echo $accessToken > ~/.m2/settings.xml
+echo '
+  <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <profiles>
+      <profile>
+        <id>d2l-private</id>
+        <activation>
+          <activeByDefault>true</activeByDefault>
+        </activation>
+        <repositories>
+          <repository>
+            <id>d2l-private</id>
+            <url>https://d2l-569998014834.d.codeartifact.us-east-1.amazonaws.com/maven/private/</url>
+          </repository>
+        </repositories>
+      </profile>
+    </profiles>
+    <servers>
+      <server>
+        <id>d2l-private</id>
+        <username>aws</username>
+        <password>${env.CODEARTIFACT_AUTH_TOKEN}</password>
+      </server>
+    </servers>
+  </settings>' > ~/.m2/settings.xml
 
 # check if in root directory
 if [ ! -d ".git" ]; then
@@ -37,7 +59,7 @@ if [ $deploy = "false" ]; then
   exit 0
 fi
 
-# deploy to Artifactory
+# deploy to CodeArtifact
 if [ -z $productBuildNumber ]; then
   # get the package version from the pom.xml
   # add following to pom.xml
@@ -51,10 +73,10 @@ else
   packageVersion="1.0.$productBuildNumber"
 fi
 
-# deploy to Artifactory only on master or if a dev wants to force a dev branch to build
+# deploy to CodeArtifact only on master or if a dev wants to force a dev branch to build
 if ([ ! -z $productBranch ] && [ $productBranch = "master" ]) || [ $deploy = "force" ]; then
   echo "deploying version: '$packageVersion'"
-  echo "\n ==> Deploy to Artifactory \n"
+  echo "\n ==> Deploy to CodeArtifact \n"
 
   mvn -s ~/.m2/settings.xml -f pom.xml "-DnewVersion=$packageVersion" versions:set
   mvn -s ~/.m2/settings.xml -f pom.xml install deploy
