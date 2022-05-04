@@ -2,11 +2,12 @@
 
 set -eu
 
-projectPath=$1
-deploy=$2
-productBranch=$3
-productBuildNumber=$4
-codeCoverageCommands=$5
+authToken=$1
+projectPath=$2
+deploy=$3
+productBranch=$4
+productBuildNumber=$5
+codeCoverageCommands=$6
 
 echo " \n\n === Building .jar file === \n"
 
@@ -14,6 +15,7 @@ echo " \n\n === Building .jar file === \n"
 mvn --version
 
 # setup CodeArtifact access token for Maven
+export CODEARTIFACT_AUTH_TOKEN=$authToken
 mkdir -p ~/.m2
 echo '
   <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
