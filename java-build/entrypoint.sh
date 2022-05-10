@@ -8,7 +8,7 @@ deploy=$3
 productBranch=$4
 productBuildNumber=$5
 codeCoverageCommands=$6
-deployCommands=$7
+deployArguments=$7
 
 echo " \n\n === Building .jar file === \n"
 
@@ -58,5 +58,5 @@ if ([ ! -z $productBranch ] && [ $productBranch = "master" ]) || [ $deploy = "fo
   echo "\n ==> Deploy to Artifactory \n"
 
   mvn -s ~/.m2/settings.xml -f pom.xml "-DnewVersion=$packageVersion" versions:set
-  mvn -s ~/.m2/settings.xml -f pom.xml install deploy $deployCommands
+  mvn -s ~/.m2/settings.xml -f pom.xml install deploy $deployArguments
 fi
