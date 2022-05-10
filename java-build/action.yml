@@ -24,6 +24,10 @@ inputs:
     description: 'Additional commands to run for code coverage requirements'
     required: false
     default: "jacoco:report coveralls:report"
+  DEPLOY_COMMANDS:
+    description: 'Additional parameters for deployment'
+    required: false
+    default: ""
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -34,3 +38,4 @@ runs:
     - ${{ inputs.BRANCH }}
     - ${{ inputs.BUILDNUM }}
     - ${{ inputs.CODE_COVERAGE_COMMANDS }}
+    - ${{ inputs.DEPLOY_COMMANDS }}
