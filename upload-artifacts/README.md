@@ -14,7 +14,7 @@ This action pack the artifacts and upload to AWS S3 and output a URL for access.
 
 ## Example usage
 
-'''
+```
 - name: Set up AWS creds
 	uses: Brightspace/third-party-actions@aws-actions/configure-aws-credentials
 	with:
@@ -30,4 +30,4 @@ This action pack the artifacts and upload to AWS S3 and output a URL for access.
 	uses: Brightspace/bdp-ci-action/upload-log@master
 	with:
 		s3-bucket: timbai-github-artifacts
-'''
+```
