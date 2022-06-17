@@ -1,0 +1,12 @@
+name: 'Git Changes'
+description: 'Compute the changes between latest commit and LKG commit'
+inputs:
+  LKG-hash:  # id of input
+    description: 'Last known good hash deployed in production'
+    required: true
+outputs:
+  change-set: # id of output
+    description: 'The change set between LKG hash and latest commit'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
