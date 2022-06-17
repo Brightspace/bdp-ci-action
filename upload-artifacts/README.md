@@ -27,7 +27,7 @@ This action pack the artifacts and upload to AWS S3 and output a URL for access.
 ...
 - name: Upload Artifacts
 	if: always() # This ensures the artifacts get uploaded even if previous step fails
-	uses: Brightspace/bdp-ci-action/upload-log@master
+	uses: Brightspace/bdp-ci-action/upload-artifacts@master
 	with:
 		s3-bucket: timbai-github-artifacts
 ```
