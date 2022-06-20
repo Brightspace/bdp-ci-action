@@ -1,0 +1,26 @@
+name: 'Upload Artifacts'
+description: 'Upload artifacts to AWS S3'
+inputs:
+  s3-bucket:
+    description: 'The AWS S3 bucket that stores artifacts'
+    required: true
+  artifacts-path:
+    description: 'The path to the artifacts that will be uploaded'
+    default: artifacts
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create tarball
+      run: tar --owner=0 --group=0 -czvf ${GITHUB_RUN_ID}.tar.gz ${{ inputs.artifacts-path }}
+      shell: bash
+    - name: Upload to S3
+      run: aws s3api put-object --bucket ${{ inputs.s3-bucket }} --key ${GITHUB_RUN_ID}.tar.gz --body ${GITHUB_RUN_ID}.tar.gz
+      shell: bash
+    - name: Print access URL
+      env:
+        BUCKET: ${{ inputs.s3-bucket }}
+      run: |
+        echo "Access artifacts: https://us-east-1.console.aws.amazon.com/s3/object/${BUCKET}?region=us-east-1&prefix=${GITHUB_RUN_ID}.tar.gz"
+      shell: bash
