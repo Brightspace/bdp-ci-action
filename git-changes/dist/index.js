@@ -14142,7 +14142,7 @@ class GitLog {
       }
       */
 
-      await Promise.all(commits.all.map(async (commit) => {
+      for(const commit of commits.all) {
         const diffSummary = await this.git.diffSummary([commit.hash + '^!']);
         /*
         DiffSummary {
@@ -14165,16 +14165,16 @@ class GitLog {
 
         for (const component of changedComponents) {
           if (!this.changeSet.hasOwnProperty(component)) {
-            this.changeSet[component] = new Set();
+            this.changeSet[component] = [];
           }
-          this.changeSet[component].add(JSON.stringify({
+          this.changeSet[component].push({
             author: commit.author_name,
             email: commit.author_email,
             message: commit.message
-          }));
+          });
         }
 
-      }));
+      }
 
       console.log(this.changeSet);
       core.setOutput('changeSet', JSON.stringify(this.changeSet));
