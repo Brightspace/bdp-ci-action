@@ -1,0 +1,51 @@
+name: 'Close Expanse ticket'
+description: 'Closes Expanse ticket'
+
+inputs:
+  expanse-endpoint:
+    required: false
+    default: 'https://expansedev.desire2learn.com'
+  pipeline-name:
+    required: true
+  ticket-id:
+    required: true
+  failed:
+    required: false
+    default: false
+  slack-token:
+    required: true
+  channel-id:
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create messages
+      id: slack-message
+      shell: bash
+      run: |
+        if [ ${{ inputs.failed }} = false ]; then
+          MESSAGE="Deployment succeeded. Closing Expanse ticket ${{ inputs.ticket-id }}."
+        else
+          MESSAGE="Deployment failed.\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nClosing Expanse ticket ${{ inputs.ticket-id }}"
+        fi
+        # NOTE: need to encode newlines when setting output
+        echo "::set-output name=message::${MESSAGE//$'\\n'/'%0A'}"
+    - id: slack
+      uses: Brightspace/third-party-actions@slackapi/slack-github-action
+      with:
+        channel-id: ${{ inputs.channel-id }}
+        slack-message: ${{ steps.slack-message.outputs.message }}
+      env:
+        SLACK_BOT_TOKEN: ${{ inputs.slack-token }}
+    - name: Close Expanse ticket
+      shell: bash
+      run: |
+        EXPANSE_TOKEN=$(aws ssm get-parameter --name ${{ inputs.pipeline-name }}-expanse-token --with-decryption | jq ".Parameter.Value")
+        if [ ${{ inputs.failed }} = false ]; then
+          expanse-cli -i ${{ inputs.expanse-endpoint }} -t $EXPANSE_TOKEN close ${{ inputs.ticket-id }}
+        else
+          POST_ID=$(echo ${{ steps.slack.outputs.thread_ts }} | sed 's/\.//')
+          SLACK_URL="https://d2l.slack.com/archives/${{ inputs.channel-id }}/p$POST_ID"
+          expanse-cli -i ${{ inputs.expanse-endpoint }} -t $EXPANSE_TOKEN close ${{ inputs.ticket-id }} "Errors during deployment. See $SLACK_URL"
+        fi
