@@ -1,0 +1,42 @@
+name: 'Create Expanse ticket'
+description: 'Creates Expanse ticket'
+
+inputs:
+  expanse-endpoint:
+    required: false
+    default: 'https://expansedev.desire2learn.com'
+  template-path:
+    required: true
+  pipeline-name:
+    required: true
+  slack-token:
+    required: true
+  channel-id:
+    required: true
+
+outputs:
+  ticket-id:
+    value: ${{ steps.create-ticket.outputs.ticket-id }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create Expanse ticket
+      id: create-ticket
+      shell: bash
+      run: |
+        EXPANSE_TOKEN=$(aws ssm get-parameter --name ${{ inputs.pipeline-name }}-expanse-token --with-decryption | jq ".Parameter.Value")
+        EXPANSE_TICKET_ID=$(expanse-cli -i ${{ inputs.expanse-endpoint }} -t $EXPANSE_TOKEN create "${{ inputs.template-path }}" "SHA ${{ github.sha }}")
+        echo "::set-output name=ticket-id::$EXPANSE_TICKET_ID"
+    - id: slack
+      uses: Brightspace/third-party-actions@slackapi/slack-github-action
+      with:
+        channel-id: ${{ inputs.channel-id }}
+        slack-message: "Created Expanse ticket ${{ steps.create-ticket.outputs.ticket-id }}.\nBuild: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nDeploying SHA `${{ github.sha }}`"
+      env:
+        SLACK_BOT_TOKEN: ${{ inputs.slack-token }}
+    - name: Slack URL
+      shell: bash
+      run: |
+        POST_ID=$(echo ${{ steps.slack.outputs.thread_ts }} | sed 's/\.//')
+        echo "Slack URL https://d2l.slack.com/archives/${{ inputs.channel-id }}/p$POST_ID"
