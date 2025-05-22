@@ -55,4 +55,4 @@ jobs:
 
       - name: Run directive
         run: |
-          npm run ${{ inputs.directive }} -- --stage ${{ inputs.stage }}
+          ${{ inputs.directive }} -- --stage ${{ inputs.stage }}
