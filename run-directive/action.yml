@@ -2,9 +2,6 @@ name: Run Directive
 run-name: test
 
 inputs:
-  repository:
-    description: 'Github repo'
-    required: true
   hash:
     description: 'Github commit hash to checkout'
     required: false
@@ -34,7 +31,6 @@ jobs:
       - name: Checkout branch
         uses: Brightspace/third-party-actions@actions/checkout
         with:
-          repository: ${{ inputs.repository }}
           ref: ${{ inputs.hash }}
           fetch-depth: 0
 
