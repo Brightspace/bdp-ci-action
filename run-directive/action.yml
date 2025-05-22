@@ -19,7 +19,7 @@ inputs:
     description: 'Name of stage'
     required: true
   directive:
-    description: 'An npm directive. e.g. deploy, test'
+    description: 'A directive to run. e.g. npm ci, npm run test'
     required: true
 
 jobs:
