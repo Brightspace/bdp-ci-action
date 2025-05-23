@@ -24,8 +24,9 @@ runs:
   steps:
     - name: Checkout branch with hash
       uses: Brightspace/third-party-actions@actions/checkout
-      if: ${{ inputs.hash == '' }}
+      if: ${{ inputs.hash != '' }}
       with:
+        ref: ${{ inputs.hash }}
         fetch-depth: 0
 
     - name: Checkout branch without hash
