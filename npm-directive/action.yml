@@ -25,7 +25,7 @@ jobs:
     using: "composite"
 
     steps:
-      - name: Checkout branch with hash
+      - name: Checkout branch without hash
         uses: Brightspace/third-party-actions@actions/checkout
         if: ${{ inputs.hash == '' }}
         with:
