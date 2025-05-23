@@ -48,8 +48,9 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         CONFIG_PATH: ${{ inputs.config }}
+        DIRECTIVES: ${{ inputs.directives }}
       run: |
         npm ci
-        for d in ${{ input.directives }}; do
+        for d in ${ DIRECTIVES }; do
           npm run ${ d } -- --stage ${{ inputs.stage }}
         done
