@@ -52,5 +52,5 @@ runs:
         STAGE: ${{ inputs.stage }}
       run: |
         for d in ${{ env.DIRECTIVES }}; do
-          echo npm run ${ d } -- --stage ${{ env.STAGE }}
+          npm run ${ d } -- --stage ${{ env.STAGE }}
         done
