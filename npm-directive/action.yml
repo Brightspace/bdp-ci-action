@@ -48,12 +48,10 @@ jobs:
         with:
           auth-token: ${{secrets.CODEARTIFACT_AUTH_TOKEN}}
 
-      - name: Setup working directory
-        run: |
-          cp ${{ inputs.config }} ${{ inputs.working-directory }}/config.json
-          cd ${{ inputs.working-directory }}
-          npm ci
-
       - name: Run directive
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          CONFIG_PATH: ${{ inputs.config }}
         run: |
+          npm ci
           npm run ${{ inputs.directive }} -- --stage ${{ inputs.stage }}
