@@ -1,4 +1,4 @@
-name: Run Directive
+name: Run NPM Directive
 run-name: test
 
 inputs:
@@ -16,20 +16,27 @@ inputs:
     description: 'Name of stage'
     required: true
   directive:
-    description: 'A directive to run. e.g. npm ci, npm run test'
+    description: 'A directive to run. e.g. test, deploy, teardown'
     required: true
 
 jobs:
-  run-directive:
-    name: Run Directive
+  npm-directive:
+    name: Run NPM Directive
     using: "composite"
 
     steps:
       - name: Setup Environment
         uses: Brightspace/bdp-ci-action/setup-env@master
 
-      - name: Checkout branch
+      - name: Checkout branch with hash
         uses: Brightspace/third-party-actions@actions/checkout
+        if: ${{ inputs.hash == '' }}
+        with:
+          fetch-depth: 0
+
+      - name: Checkout branch with hash
+        uses: Brightspace/third-party-actions@actions/checkout
+        if: ${{ inputs.hash != '' }}
         with:
           ref: ${{ inputs.hash }}
           fetch-depth: 0
@@ -48,7 +55,8 @@ jobs:
         run: |
           cp ${{ inputs.config }} ${{ inputs.working-directory }}/config.json
           cd ${{ inputs.working-directory }}
+          npm ci
 
       - name: Run directive
         run: |
-          ${{ inputs.directive }} -- --stage ${{ inputs.stage }}
+          npm run ${{ inputs.directive }} -- --stage ${{ inputs.stage }}
