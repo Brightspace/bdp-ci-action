@@ -52,5 +52,5 @@ runs:
       run: |
         npm ci
         for d in ${{ input.directives }}; do
-          npm run ${{ d }} -- --stage ${{ inputs.stage }}
+          npm run ${ d } -- --stage ${{ inputs.stage }}
         done
