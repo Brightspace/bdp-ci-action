@@ -25,9 +25,6 @@ jobs:
     using: "composite"
 
     steps:
-      - name: Setup Environment
-        uses: Brightspace/bdp-ci-action/setup-env@master
-
       - name: Checkout branch with hash
         uses: Brightspace/third-party-actions@actions/checkout
         if: ${{ inputs.hash == '' }}
