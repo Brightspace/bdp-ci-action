@@ -15,9 +15,9 @@ inputs:
     default: false
 
 outputs:
-  configs:
+  result:
     description: Sorted array of component collections. (ie. [["infrastructure"], ["emr-monitor","event-flow-bus"], ...]
-    value: ${{ steps.phase-configs.outputs.configs }}
+    value: ${{ steps.phase-configs.outputs.result }}
 
 runs:
   using: 'composite'
@@ -50,5 +50,4 @@ runs:
             sortedKeys = sortedKeys.reverse();
           }
           
-          phases = sortedKeys.map(k => phases[k].map(component => component.name));
-          core.setOutput('configs', phases);
+          return sortedKeys.map(k => phases[k].map(component => component.name));
