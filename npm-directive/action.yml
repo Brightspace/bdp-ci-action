@@ -22,17 +22,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout branch with hash
+    - name: Checkout branch
       uses: Brightspace/third-party-actions@actions/checkout
-      if: ${{ inputs.hash != '' }}
       with:
         ref: ${{ inputs.hash }}
-        fetch-depth: 0
-
-    - name: Checkout branch without hash
-      uses: Brightspace/third-party-actions@actions/checkout
-      if: ${{ inputs.hash == '' }}
-      with:
         fetch-depth: 0
 
     - name: Use Node.js
