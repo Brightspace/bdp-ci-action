@@ -3,7 +3,7 @@ description: 'Returns ordered list of phased BEF/BDP components'
 
 inputs:
   config-file:
-    description: Target config file on which to identify the component phases [ie. './bdp-configs/configs/permapound.json']
+    description: Target config file on which to identify the component phases [ie. ./bdp-configs/configs/permapound.json]
     required: true
   reverse-sort:
     required: false
@@ -28,7 +28,7 @@ runs:
       run: |
 
         # group_by results in a natural (asc) order sort
-        $ JSON_CONFIGS=$(cat ${{inputs.config-file}}) | echo $JSON_CONFIGS | jq '.products | group_by(.phase) | map(map(.name) - ${{inputs.ignore-components}}) ${{inputs.reverse-sort}}'
+        JSON_CONFIGS=$(cat ${{inputs.config-file}}) | echo $JSON_CONFIGS | jq '.products | group_by(.phase) | map(map(.name) - ${{inputs.ignore-components}}) ${{inputs.reverse-sort}}'
         
         # returns an array of arrays. Each nested array are same-phased component names
         echo "::set-output name=configs::$JSON_CONFIGS"
