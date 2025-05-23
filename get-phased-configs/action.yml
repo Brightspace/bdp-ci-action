@@ -5,14 +5,14 @@ inputs:
   config-file:
     description: Target config file on which to identify the component phases (ie. ./bdp-configs/configs/permapound.json)
     required: true
+  ignore-components-csv:
+    required: false
+    description: CSV string of components to ignore for phased ordering
+    default: bdp-configs,bef-configs
   sort-desc:
     required: false
     description: Indicate whether how the phases are sorted. Default is ascending. Pass 'true' for descending sort
     default: false
-  ignore-components-csv:
-    required: false
-    description: List of components to ignore for phased ordering
-    default: bdp-configs,bef-configs
 
 outputs:
   configs:
@@ -28,7 +28,7 @@ runs:
       env:
         CONFIG_FILE: ${{ inputs.config-file }}
         IGNORE_LIST_CSV: ${{ inputs.ignore-components-csv }}
-        REVERSE: ${{ inputs.sort-desc }}
+        SORT_DESC: ${{ inputs.sort-desc }}
       with:
         script: |
           
@@ -46,7 +46,7 @@ runs:
           
           let phases = Object.groupBy(products, ({ phase }) => Number(phase));
           let sortedKeys = Object.keys(phases).sort();
-          if (process.env.REVERSE === 'true'){
+          if (process.env.SORT_DESC === 'true'){
             sortedKeys = sortedKeys.reverse();
           }
           
