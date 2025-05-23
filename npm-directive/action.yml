@@ -15,8 +15,8 @@ inputs:
   stage:
     description: 'Name of stage'
     required: true
-  directives:
-    description: 'Directives to run. Multiple directives separated by spaces e.g. test deploy'
+  directive:
+    description: 'Directive to run. e.g. test, deploy'
     required: true
 
 runs:
@@ -44,13 +44,11 @@ runs:
       with:
         auth-token: ${{secrets.CODEARTIFACT_AUTH_TOKEN}}
 
-    - name: Run directives
+    - name: Run directive
       working-directory: ${{ inputs.working-directory }}
       env:
         CONFIG_PATH: ${{ inputs.config }}
-        DIRECTIVES: ${{ inputs.directives }}
+        DIRECTIVE: ${{ inputs.directive }}
         STAGE: ${{ inputs.stage }}
       run: |
-        for d in ${{ env.DIRECTIVES }}; do
-          npm run ${ d } -- --stage ${{ env.STAGE }}
-        done
+        npm run ${{ env.DIRECTIVE }} -- --stage ${{ env.STAGE }}
