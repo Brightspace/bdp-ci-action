@@ -19,41 +19,38 @@ inputs:
     description: 'Directives to run. Multiple directives separated by spaces e.g. test deploy'
     required: true
 
-jobs:
-  npm-directive:
-    name: Run NPM Directive
-    using: "composite"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout branch with hash
+      uses: Brightspace/third-party-actions@actions/checkout
+      if: ${{ inputs.hash == '' }}
+      with:
+        fetch-depth: 0
 
-    steps:
-      - name: Checkout branch with hash
-        uses: Brightspace/third-party-actions@actions/checkout
-        if: ${{ inputs.hash == '' }}
-        with:
-          fetch-depth: 0
+    - name: Checkout branch with hash
+      uses: Brightspace/third-party-actions@actions/checkout
+      if: ${{ inputs.hash != '' }}
+      with:
+        ref: ${{ inputs.hash }}
+        fetch-depth: 0
 
-      - name: Checkout branch with hash
-        uses: Brightspace/third-party-actions@actions/checkout
-        if: ${{ inputs.hash != '' }}
-        with:
-          ref: ${{ inputs.hash }}
-          fetch-depth: 0
+    - name: Use Node.js
+      uses: Brightspace/third-party-actions@actions/setup-node
+      with:
+        node-version-file: .nvmrc
 
-      - name: Use Node.js
-        uses: Brightspace/third-party-actions@actions/setup-node
-        with:
-          node-version-file: .nvmrc
+    - name: Add CodeArtifact npm registry
+      uses: Brightspace/codeartifact-actions/npm/add-registry@main
+      with:
+        auth-token: ${{secrets.CODEARTIFACT_AUTH_TOKEN}}
 
-      - name: Add CodeArtifact npm registry
-        uses: Brightspace/codeartifact-actions/npm/add-registry@main
-        with:
-          auth-token: ${{secrets.CODEARTIFACT_AUTH_TOKEN}}
-
-      - name: Run directives
-        working-directory: ${{ inputs.working-directory }}
-        env:
-          CONFIG_PATH: ${{ inputs.config }}
-        run: |
-          npm ci
-          for d in ${{ input.directives }}; do
-            npm run ${{ d }} -- --stage ${{ inputs.stage }}
-          done
+    - name: Run directives
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        CONFIG_PATH: ${{ inputs.config }}
+      run: |
+        npm ci
+        for d in ${{ input.directives }}; do
+          npm run ${{ d }} -- --stage ${{ inputs.stage }}
+        done
