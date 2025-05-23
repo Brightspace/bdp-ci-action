@@ -51,7 +51,6 @@ runs:
         DIRECTIVES: ${{ inputs.directives }}
         STAGE: ${{ inputs.stage }}
       run: |
-        npm ci
-        for d in ${ DIRECTIVES }; do
-          npm run ${ d } -- --stage ${ STAGE }
+        for d in ${{ env.DIRECTIVES }}; do
+          echo npm run ${ d } -- --stage ${{ env.STAGE }}
         done
