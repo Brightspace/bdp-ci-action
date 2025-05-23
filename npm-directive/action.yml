@@ -45,4 +45,4 @@ runs:
         DIRECTIVE: ${{ inputs.directive }}
         STAGE: ${{ inputs.stage }}
       run: |
-        npm run ${{ env.DIRECTIVE }} -- --stage ${{ env.STAGE }}
+        npm run ${ DIRECTIVE } -- --stage ${ STAGE }
