@@ -1,0 +1,48 @@
+name: Run NPM Directive
+run-name: test
+
+inputs:
+  hash:
+    description: 'Github commit hash to checkout'
+    required: false
+    default: ''
+  working-directory:
+    description: 'Name of component directory'
+    required: true
+  config:
+    description: 'Config JSON file'
+    required: true
+  stage:
+    description: 'Name of stage'
+    required: true
+  directive:
+    description: 'Directive to run. e.g. test, deploy'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout branch
+      uses: Brightspace/third-party-actions@actions/checkout
+      with:
+        ref: ${{ inputs.hash }}
+        fetch-depth: 0
+
+    - name: Use Node.js
+      uses: Brightspace/third-party-actions@actions/setup-node
+      with:
+        node-version-file: .nvmrc
+
+    - name: Add CodeArtifact npm registry
+      uses: Brightspace/codeartifact-actions/npm/add-registry@main
+      with:
+        auth-token: ${{secrets.CODEARTIFACT_AUTH_TOKEN}}
+
+    - name: Run directive
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        CONFIG_PATH: ${{ inputs.config }}
+        DIRECTIVE: ${{ inputs.directive }}
+        STAGE: ${{ inputs.stage }}
+      run: |
+        npm run ${ DIRECTIVE } -- --stage ${ STAGE }
