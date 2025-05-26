@@ -1,0 +1,53 @@
+name: 'Get Phased Configs'
+description: 'Returns ordered list of phased BEF/BDP components'
+
+inputs:
+  config-file:
+    description: Target config file on which to identify the component phases (ie. ./bdp-configs/configs/permapound.json)
+    required: true
+  ignore-components-csv:
+    required: false
+    description: CSV string of components to ignore for phased ordering
+    default: bdp-configs,bef-configs
+  sort-desc:
+    required: false
+    description: Indicate whether how the phases are sorted. Default is ascending. Pass 'true' for descending sort
+    default: false
+
+outputs:
+  result:
+    description: Sorted array of component collections. (ie. [["infrastructure"], ["emr-monitor","event-flow-bus"], ...]
+    value: ${{ steps.phase-configs.outputs.result }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Phase component names from config file
+      id: phase-configs
+      uses: Brightspace/third-party-actions@actions/github-script
+      env:
+        CONFIG_FILE: ${{ inputs.config-file }}
+        IGNORE_LIST_CSV: ${{ inputs.ignore-components-csv }}
+        SORT_DESC: ${{ inputs.sort-desc }}
+      with:
+        script: |
+          
+          let products = [];
+          try {
+            const fs = require('fs');
+            const configString = fs.readFileSync(process.env.CONFIG_FILE);
+            const configJSON = JSON.parse(configString);
+            products = configJSON.products ?? [];
+            products = products.filter(p => !process.env.IGNORE_LIST_CSV.split(',').includes(p.name));
+          } catch(err) {
+            core.error("Error while reading or parsing the JSON config file.")
+            core.setFailed(err)
+          }
+          
+          let phases = Object.groupBy(products, ({ phase }) => Number(phase));
+          let sortedKeys = Object.keys(phases).sort();
+          if (process.env.SORT_DESC === 'true'){
+            sortedKeys = sortedKeys.reverse();
+          }
+          
+          return sortedKeys.map(k => phases[k].map(component => component.name));
