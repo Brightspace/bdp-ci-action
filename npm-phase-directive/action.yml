@@ -52,7 +52,7 @@ jobs:
       - name: Add CodeArtifact npm registry
         uses: Brightspace/codeartifact-actions/npm/add-registry@main
         with:
-          auth-token: ${{secrets.CODEARTIFACT_AUTH_TOKEN}}
+          auth-token: ${{ secrets.CODEARTIFACT_AUTH_TOKEN }}
 
       - name: Set up AWS creds
         uses: Brightspace/third-party-actions@aws-actions/configure-aws-credentials
