@@ -72,7 +72,7 @@ jobs:
       matrix:
         COMPONENT: ${{ fromJson(inputs.components) }}
     steps:
-      - name: Run Directive
+      - name: Run Directive (${{ matrix.COMPONENT }})
         working-directory: ${{ matrix.COMPONENT }}
         env:
           CONFIG_PATH: ${{ inputs.config }}
