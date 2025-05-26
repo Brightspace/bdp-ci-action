@@ -21,6 +21,10 @@ on:
       region:
         description: 'AWS region'
         required: true
+      role:
+        description: 'Name of AWS role to assume"
+        required: true
+        default: 'github-actions-ci-assumable-role'
       stage:
         description: 'Name of stage'
         required: true
@@ -61,8 +65,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ inputs.region }}
-          role-to-assume: "role=arn:aws:iam::${{ inputs.account }}:role/github-actions-ci-assumable-role"
+          role-to-assume: "arn:aws:iam::${{ inputs.account }}:role/${{ inputs.role }}"
           role-duration-seconds: 1200
+
+      - name: NPM CI
+        run: npm ci
 
   run-directive:
     runs-on: [ self-hosted, AWS, Linux ]
@@ -78,6 +85,4 @@ jobs:
           CONFIG_PATH: ${{ inputs.config }}
           DIRECTIVE: ${{ inputs.directive }}
           STAGE: ${{ inputs.stage }}
-        run: |
-          npm ci
-          npm run ${ DIRECTIVE } -- --stage ${ STAGE }
+        run: npm run ${ DIRECTIVE } -- --stage ${ STAGE }
