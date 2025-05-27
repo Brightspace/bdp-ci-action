@@ -1,45 +1,46 @@
-name: Run NPM Directive for Stage
+name: NPM Phase Directive
+
 on:
   workflow_call:
     inputs:
       account:
-        description: 'AWS account number'
+        type: string
+        description: AWS account number
         required: true
       components:
-        description: 'List of components to action on'
+        type: string
+        description: List of components to action on
         required: true
       config:
-        description: 'Config JSON file'
+        type: string
+        description: Config JSON file
         required: true
       directive:
-        description: 'Directive to run. e.g. test, deploy'
+        type: string
+        description: Directive to run. e.g. test, deploy
         required: true
       hash:
-        description: 'Github commit hash to checkout'
+        type: string
+        description: Github commit hash to checkout
         required: false
         default: ''
       region:
-        description: 'AWS region'
+        type: string
+        description: AWS region
         required: true
       role:
-        description: 'Name of AWS role to assume"
-        required: true
-        default: 'github-actions-ci-assumable-role'
+        type: string
+        description: Name of AWS role to assume
+        required: false
+        default: github-actions-ci-assumable-role
       stage:
-        description: 'Name of stage'
-        required: true
-    secrets:
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      AWS_SESSION_TOKEN:
-        required: true
-      CODEARTIFACT_AUTH_TOKEN:
+        type: string
+        description: Name of stage
         required: true
 
 jobs:
   env-setup:
+    name: Setup NPM environment
     runs-on: [ self-hosted, AWS, Linux ]
     steps:
       - name: Checkout branch
@@ -47,17 +48,14 @@ jobs:
         with:
           ref: ${{ inputs.hash }}
           fetch-depth: 0
-
       - name: Use Node.js
         uses: Brightspace/third-party-actions@actions/setup-node
         with:
           node-version-file: .nvmrc
-
       - name: Add CodeArtifact npm registry
         uses: Brightspace/codeartifact-actions/npm/add-registry@main
         with:
           auth-token: ${{ secrets.CODEARTIFACT_AUTH_TOKEN }}
-
       - name: Set up AWS creds
         uses: Brightspace/third-party-actions@aws-actions/configure-aws-credentials
         with:
@@ -67,11 +65,11 @@ jobs:
           aws-region: ${{ inputs.region }}
           role-to-assume: "arn:aws:iam::${{ inputs.account }}:role/${{ inputs.role }}"
           role-duration-seconds: 1200
-
       - name: NPM CI
         run: npm ci
 
   run-directive:
+    name: Execute NPM directive
     runs-on: [ self-hosted, AWS, Linux ]
     needs: env-setup
     strategy:
