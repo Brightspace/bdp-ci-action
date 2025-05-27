@@ -1,13 +1,13 @@
 name: Download S3
 description: Download latest branch package from S3
 inputs:
-  component:
-    required: true
-    description: The desired component to download
   branch:
     required: false
     description: The desired branch of the named component
     default: master
+  componentsCsv:
+    required: true
+    description: The desired components to download in a CSV string
   targetFolder:
     required: true
     description: The top level folder in which to download
@@ -17,20 +17,24 @@ runs:
     - name: Download latest component build on branch
       shell: bash
       env:
-        COMPONENT: ${{ inputs.component }}
+        COMPONENTS_CSV: ${{ inputs.componentsCsv }}
         BRANCH: ${{ inputs.branch }}
         FOLDER: ${{ inputs.targetFolder }}
-      run: |
+      run: | 
+        mkdir -p $FOLDER
+        IFS=, read -a COMPONENTS_ARRAY <<< $COMPONENTS_CSV
         
-        # Get the latest build number
-        aws s3api get-object --bucket d2l-adp-west --key $COMPONENT/$BRANCH/latestBuild latestBuilld.txt
-        BUILD_NUMBER=$(cat latestBuilld.txt)
-        
-        # Download the archive
-        aws s3api get-object --bucket d2l-adp-west --key $COMPONENT/$BRANCH/$BUILD_NUMBER/release.tar.gz release.tar.gz
-        
-        # Extract into the desired folder and remove the top level 'install' directory
-        mkdir $FOLDER
-        tar -xvzf release.tar.gz -C $FOLDER
-        mv $FOLDER/install/* $FOLDER
-        rm -r $FOLDER/install
+        for COMPONENT in "${COMPONENTS_ARRAY[@]}"
+        do
+          # Get the latest build number
+          aws s3api get-object --bucket d2l-adp-west --key $COMPONENT/$BRANCH/latestBuild latestBuilld.txt
+          BUILD_NUMBER=$(cat latestBuilld.txt)
+          
+          # Download the archive
+          aws s3api get-object --bucket d2l-adp-west --key $COMPONENT/$BRANCH/$BUILD_NUMBER/release.tar.gz release.tar.gz
+          
+          # Extract into the desired folder and remove the top level 'install' directory
+          tar -xvzf release.tar.gz -C $FOLDER
+          mv $FOLDER/install/* $FOLDER
+          rm -r $FOLDER/install
+        done
