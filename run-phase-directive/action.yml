@@ -26,7 +26,7 @@ runs:
       with:
        script: |
          const workingDirectories = JSON.parse(process.env.WORKING_DIRS) ?? [];
-         const args = [];
+         let args = [];
          
          if (process.env.STAGE !== '') {
            args = ['--', '--stage', process.env.STAGE];
