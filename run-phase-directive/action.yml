@@ -1,0 +1,44 @@
+name: Run Phase Directive
+description: Reusable action which will execute an NPM directive against all the components in a phase
+
+inputs:
+  componentWorkingDirs:
+    description: JSON array of all working directories in which to perform the npm directive.
+    required: true
+  directive:
+    description: Directive to run. e.g. test, deploy
+    required: true
+  stage:
+    description: Name of stage
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # Run the directive
+    - name: Execute phase directive against all components
+      uses: Brightspace/third-party-actions@actions/github-script
+      env:
+       WORKING_DIRS: ${{ inputs.componentWorkingDirs }}
+       DIRECTIVE: ${{ inputs.directive }}
+       STAGE: ${{ inputs.stage }}
+      with:
+       script: |
+         const workingDirectories = JSON.parse(process.env.WORKING_DIRS) ?? [];
+         const args = [];
+         
+         if (process.env.STAGE !== '') {
+           args = ['--', '--stage', process.env.STAGE];
+         }
+         
+         const results = await Promise.all(
+           workingDirectories.map(
+             wd => exec.getExecOutput(`npm run ${process.env.DIRECTIVE}`, args, {cwd: wd})
+         ));
+         
+         results.forEach(({exitCode, stderr}) => {
+           if (exitCode !== 0) {
+             core.setError(`There was a directive error: ${stderr}`);
+           }
+         });
