@@ -36,6 +36,6 @@ runs:
           # Extract into the desired folder and remove the top level 'install' directory
           tar -xvzf release.tar.gz -C $FOLDER
           mv $FOLDER/install/* $FOLDER
-          mv $FOLDER/install/.* $FOLDER
+          mv $FOLDER/install/.* $FOLDER 2>/dev/null
           rm -r $FOLDER/install
         done
